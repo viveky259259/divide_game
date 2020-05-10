@@ -69,27 +69,32 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void startCalculation() {
-    //check horizontal
     List<Pairs> pairs = List();
+    //check horizontal
     for (int i = 0; i < widget.x; i++) {
       for (int k = 0; k < widget.y - 1; k++) {
         int a = datas[i][k];
         int b = datas[i][k + 1];
         Pairs first;
-        if (a * b > 0 && (a!=-1 && b!=-1)) first = Pairs(a, b, i, k, i, k+1);
+        if (a * b > 0 && (a != -1 && b != -1))
+          first = Pairs(a, b, i, k, i, k + 1);
 
         if (first != null) pairs.add(first);
       }
-//      int a = datas[i][0];
-//      int b = datas[i][1];
-//      int c = datas[i][2];
-//
-//      Pairs first, second;
-//      if (a * b > 0) first = Pairs(a, b, i, 0, i, 1);
-//      if (b * c > 0) second = Pairs(b, c, i, 1, i, 2);
-//      if (first != null) pairs.add(first);
-//      if (second != null) pairs.add(second);
     }
+    //check vertical
+    for (int i = 0; i < widget.x - 1; i++) {
+      for (int k = 0; k < widget.y; k++) {
+        int a = datas[i][k];
+        int b = datas[i + 1][k];
+        Pairs first;
+        if (a * b > 0 && (a != -1 && b != -1))
+          first = Pairs(a, b, i, k, i + 1, k);
+
+        if (first != null) pairs.add(first);
+      }
+    }
+    bool recheck = false;
     pairs.forEach((e) {
       print('${e.a} , ${e.b}');
       e.calculate();
@@ -101,13 +106,16 @@ class _GameScreenState extends State<GameScreen> {
         if (e.ans < 0) {
           datas[e.i1][e.j1] = -1;
           datas[e.i2][e.j2] = e.ans * -1;
+          recheck = true;
         } else if (e.ans > 0) {
           datas[e.i2][e.j2] = -1;
           datas[e.i1][e.j1] = e.ans;
+          recheck = true;
         }
       }
     });
     setState(() {});
+    if (recheck) startCalculation();
   }
 
   @override
@@ -228,7 +236,9 @@ class _GameScreenState extends State<GameScreen> {
                           else
                             return Container(
                               decoration: BoxDecoration(
-                                  color:  candidateData.length > 0 ? Color.fromRGBO(101, 213, 181, 0.8):Colors.white38,
+                                  color: candidateData.length > 0
+                                      ? Color.fromRGBO(101, 213, 181, 0.8)
+                                      : Colors.white38,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(8))),
                               child: Center(
@@ -241,8 +251,8 @@ class _GameScreenState extends State<GameScreen> {
                               )),
                             );
                         },
-                        onWillAccept: (data){
-                          return  datas[i][j] == -1;
+                        onWillAccept: (data) {
+                          return datas[i][j] == -1;
                         },
                         onAccept: (data) {
                           isAccepted = true;
@@ -315,113 +325,10 @@ class _GameScreenState extends State<GameScreen> {
                         )),
                       ),
                     ),
-                    Draggable(
-                      data: 'Flutter',
-                      child: FlutterLogo(
-                        size: 100.0,
-                      ),
-                      feedback: FlutterLogo(
-                        size: 100.0,
-                      ),
-                      childWhenDragging: Container(),
-                    )
                   ],
                 ),
               ),
             ),
-            SizedBox(
-              height: 100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Expanded(
-                    child: DragTarget(
-                      builder:
-                          (context, List<int> candidateData, rejectedData) {
-                        return Center(
-                          child: isSuccessful
-                              ? Padding(
-                                  padding: EdgeInsets.only(top: 100.0),
-                                  child: Container(
-                                    color: Colors.yellow,
-                                    height: 200.0,
-                                    width: 200.0,
-                                    child: FlutterLogo(
-                                      size: 100.0,
-                                    ),
-                                  ),
-                                )
-                              : Container(
-                                  height: 200.0,
-                                  width: 200.0,
-                                  color: Colors.yellow,
-                                ),
-                        );
-                      },
-                      onWillAccept: (data) {
-                        return true;
-                      },
-                      onAccept: (data) {
-                        setState(() {
-                          isSuccessful = true;
-                        });
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: DragTarget(
-                      onLeave: (a) {
-                        print(11);
-                      },
-                      builder:
-                          (context, List<int> candidateData, rejectedData) {
-                        return Container(
-                          decoration: BoxDecoration(
-                              color:
-                                  isSuccessful ? Colors.white : Colors.white38,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8))),
-                        );
-                      },
-                      onWillAccept: (data) {
-                        return true;
-                      },
-                      onAccept: (data) {
-                        setState(() {
-                          isSuccessful = true;
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: 32,
-                  ),
-                  Expanded(
-                    child: DragTarget(
-                      onLeave: (a) {
-                        print(11);
-                      },
-                      builder: (context, candidateData, rejectedData) {
-                        return Container(
-                          height: double.infinity,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              color: Colors.white38,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8))),
-                        );
-                      },
-                      onWillAccept: (data) {
-                        return true;
-                      },
-                      onAccept: (data) {
-                        print(data);
-                      },
-                    ),
-                  )
-                ],
-              ),
-            )
           ],
         ),
       ),
