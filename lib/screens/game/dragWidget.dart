@@ -1,29 +1,31 @@
-import 'dart:math';
-
+import 'package:doublegame/model/dragNumbers.dart';
 import 'package:flutter/material.dart';
 
+import '../numberDelegate.dart';
+
 class DragWidget extends StatefulWidget {
+  final DragNumbers dragNumbers;
+
+  DragWidget(this.dragNumbers);
+
   @override
   _DragWidgetState createState() => _DragWidgetState();
 }
 
 class _DragWidgetState extends State<DragWidget> {
-  int currentValue;
-
   @override
   void initState() {
     super.initState();
-    getRandomValue();
   }
 
   void getRandomValue() {
-    currentValue = Random().nextInt(8) + 2;
+    NumberDelegate.generateRandomNumber(widget.dragNumbers);
   }
 
   @override
   Widget build(BuildContext context) {
     return Draggable(
-      data: currentValue,
+      data: widget.dragNumbers.currentNum,
       onDragCompleted: () {
         getRandomValue();
         setState(() {});
@@ -41,7 +43,7 @@ class _DragWidgetState extends State<DragWidget> {
                 borderRadius: BorderRadius.all(Radius.circular(8))),
             child: Center(
                 child: Text(
-              currentValue.toString(),
+              widget.dragNumbers.currentNum.toString(),
               style: TextStyle(color: Colors.white70, fontSize: 42),
             )),
           ),
@@ -59,7 +61,7 @@ class _DragWidgetState extends State<DragWidget> {
               borderRadius: BorderRadius.all(Radius.circular(8))),
           child: Center(
               child: Text(
-            currentValue.toString(),
+            widget.dragNumbers.currentNum.toString(),
             style: TextStyle(color: Colors.white70, fontSize: 42),
           )),
         ),

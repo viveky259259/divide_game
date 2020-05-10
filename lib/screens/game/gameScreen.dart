@@ -1,6 +1,9 @@
+import 'package:doublegame/model/dragNumbers.dart';
+import 'package:doublegame/screens/numberDelegate.dart';
+import 'package:doublegame/screens/timerWidget.dart';
 import 'package:flutter/material.dart';
 
-import 'drag_widget.dart';
+import 'dragWidget.dart';
 
 class GameScreen extends StatefulWidget {
   final int type;
@@ -44,18 +47,18 @@ class Pairs {
 
 class _GameScreenState extends State<GameScreen> {
   bool isSuccessful = false;
-
-  int currentValue = 10;
-  List<List<int>> matrix = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
-  ];
+  int keep = -1;
+  int score = 0;
+  DragNumbers dragNumbers;
   List<List<int>> datas;
+  bool restart;
 
   void initState() {
     super.initState();
+    restart = false;
     datas = new List.generate(widget.x, (_) => new List(widget.y));
+    dragNumbers = DragNumbers();
+    NumberDelegate.generateRandomNumber(dragNumbers);
     updateData();
   }
 
@@ -65,7 +68,7 @@ class _GameScreenState extends State<GameScreen> {
         datas[i][j] = -1;
       }
     }
-    print(datas);
+    score = 0;
   }
 
   void startCalculation() {
@@ -102,20 +105,62 @@ class _GameScreenState extends State<GameScreen> {
       if (e.ans == 1) {
         datas[e.i1][e.j1] = -1;
         datas[e.i2][e.j2] = -1;
+        int score = e.a * e.b;
+        this.score = this.score + (score > 0 ? score : score * -1);
       } else if (e.ans != -1) {
         if (e.ans < 0) {
           datas[e.i1][e.j1] = -1;
           datas[e.i2][e.j2] = e.ans * -1;
           recheck = true;
+          int score = e.a * e.b;
+          this.score = this.score + (score > 0 ? score : score * -1);
         } else if (e.ans > 0) {
           datas[e.i2][e.j2] = -1;
           datas[e.i1][e.j1] = e.ans;
           recheck = true;
+          int score = e.a * e.b;
+          this.score = this.score + (score > 0 ? score : score * -1);
         }
       }
     });
     setState(() {});
-    if (recheck) startCalculation();
+    if (recheck) {
+      startCalculation();
+      return;
+    }
+    if (!recheck) {
+      checkIfGameEnds();
+    }
+  }
+
+  checkIfGameEnds() async {
+    bool gameEnds = true;
+    for (int i = 0; i < widget.x - 1; i++) {
+      if (gameEnds)
+        for (int k = 0; k < widget.y; k++) {
+          if (datas[i][k] == -1) {
+            gameEnds = false;
+            break;
+          }
+        }
+      else
+        break;
+    }
+    if (gameEnds) {
+      setState(() {
+        restart = true;
+      });
+      await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('Game Ends'),
+                content: Text('$score Scored'),
+              ));
+      setState(() {
+        updateData();
+        restart = false;
+      });
+    }
   }
 
   @override
@@ -126,7 +171,11 @@ class _GameScreenState extends State<GameScreen> {
         child: Column(
           children: <Widget>[
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.1,
+              height: MediaQuery.of(context).size.height * 0.05,
+            ),
+            TimerWidget(restart),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.05,
             ),
             Row(
               children: <Widget>[
@@ -139,14 +188,20 @@ class _GameScreenState extends State<GameScreen> {
                   width: 16,
                 ),
                 Text(
-                  '1046',
+                  '$score',
                   style: TextStyle(color: Colors.white70, fontSize: 32),
                 ),
                 Spacer(),
                 InkWell(
                   onTap: () {
+                    setState(() {
+                      restart = true;
+                    });
                     updateData();
-                    setState(() {});
+                    Future.delayed(Duration(milliseconds: 16))
+                        .then((value) => setState(() {
+                              restart = false;
+                            }));
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -163,17 +218,6 @@ class _GameScreenState extends State<GameScreen> {
                 SizedBox(
                   width: 16,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white70, width: 4)),
-                  padding: EdgeInsets.all(8),
-                  child: Icon(
-                    Icons.pause,
-                    size: 32,
-                    color: Colors.white70,
-                  ),
-                )
               ],
             ),
             SizedBox(
@@ -291,7 +335,7 @@ class _GameScreenState extends State<GameScreen> {
                             borderRadius: BorderRadius.all(Radius.circular(8))),
                         child: Center(
                             child: Text(
-                          '15',
+                          dragNumbers.nextToNext.toString(),
                           style: TextStyle(color: Colors.white70, fontSize: 24),
                         )),
                       ),
@@ -305,25 +349,95 @@ class _GameScreenState extends State<GameScreen> {
                             borderRadius: BorderRadius.all(Radius.circular(8))),
                         child: Center(
                             child: Text(
-                          '18',
+                          dragNumbers.next.toString(),
                           style: TextStyle(color: Colors.white70, fontSize: 24),
                         )),
                       ),
                     ),
-                    DragWidget(),
-                    Center(
-                      child: Container(
-                        height: 102,
-                        width: 102,
-                        decoration: BoxDecoration(
-                            color: Color.fromRGBO(101, 213, 181, 0.5),
-                            borderRadius: BorderRadius.all(Radius.circular(8))),
-                        child: Center(
-                            child: Text(
-                          '15',
-                          style: TextStyle(color: Colors.white70, fontSize: 64),
-                        )),
-                      ),
+                    DragWidget(dragNumbers),
+                    DragTarget(
+                      onLeave: (a) {
+                        print(11);
+                      },
+                      builder:
+                          (context, List<int> candidateData, rejectedData) {
+                        if (keep != -1)
+                          return Draggable(
+                            data: keep,
+                            onDragCompleted: () {
+                              keep = -1;
+                              setState(() {});
+                            },
+                            feedback: Material(
+                              color: Color.fromRGBO(101, 213, 181, 0.8),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              child: Center(
+                                child: Container(
+                                  height: 84,
+                                  width: 84,
+                                  decoration: BoxDecoration(
+                                      color: Color.fromRGBO(101, 213, 181, 0.8),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8))),
+                                  child: Center(
+                                      child: Text(
+                                    keep.toString(),
+                                    style: TextStyle(
+                                        color: Colors.white70, fontSize: 42),
+                                  )),
+                                ),
+                              ),
+                            ),
+                            childWhenDragging: Center(
+                              child: Container(),
+                            ),
+                            child: Center(
+                              child: Container(
+                                height: 84,
+                                width: 84,
+                                decoration: BoxDecoration(
+                                    color: Color.fromRGBO(101, 213, 181, 0.8),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8))),
+                                child: Center(
+                                    child: Text(
+                                  keep.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white70, fontSize: 42),
+                                )),
+                              ),
+                            ),
+                          );
+                        else
+                          return Container(
+                            height: 84,
+                            width: 84,
+                            decoration: BoxDecoration(
+                                color: candidateData.length > 0
+                                    ? Color.fromRGBO(101, 213, 181, 0.8)
+                                    : Colors.white38,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
+                            child: Center(
+                                child: Text(
+                              candidateData.length > 0
+                                  ? candidateData[0].toString()
+                                  : '',
+                              style: TextStyle(
+                                  color: Colors.white70, fontSize: 42),
+                            )),
+                          );
+                      },
+                      onWillAccept: (data) {
+                        return keep == -1;
+                      },
+                      onAccept: (data) {
+                        print(data);
+                        keep = data;
+                        startCalculation();
+                      },
                     ),
                   ],
                 ),
