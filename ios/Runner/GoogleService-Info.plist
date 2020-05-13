@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>151657150168-r46d3k4o7md9s3045oalur9crpfeimad.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.151657150168-r46d3k4o7md9s3045oalur9crpfeimad</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>151657150168-k3vkt16g5e2c1dn7bms2e94ds6ikhbg0.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAwNLXy48Cx3qLCyCNy8Ja5EPJXS_MQ79c</string>
+	<key>GCM_SENDER_ID</key>
+	<string>151657150168</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>co.stringsway.dividegame</string>
+	<key>PROJECT_ID</key>
+	<string>dividegame-2a076</string>
+	<key>STORAGE_BUCKET</key>
+	<string>dividegame-2a076.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:151657150168:ios:fafdaae1dc69a1f57ec9ad</string>
+	<key>DATABASE_URL</key>
+	<string>https://dividegame-2a076.firebaseio.com</string>
+</dict>
+</plist>
