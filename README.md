@@ -22,7 +22,7 @@
  9. [ ] More types of play 
  
  
-##Game snapshots
+## Game snapshots
 
 ![GameImage](https://github.com/viveky259259/divide_game/blob/master/snapshots/divide%20game%2012.png?raw=true)
 ![GameImage](https://github.com/viveky259259/divide_game/blob/master/snapshots/divide%20game1.png?raw=true)
