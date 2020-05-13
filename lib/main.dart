@@ -1,4 +1,4 @@
-import 'package:doublegame/screens/splashScreen.dart';
+import 'package:dividegame/screens/splashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,7 +10,7 @@ class DoubleGameApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(scaffoldBackgroundColor: Colors.black),
       navigatorKey: Get.key,
-      title: 'Double',
+      title: 'Divide',
       home: SplashScreen(),
     );
   }

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "151657150168",
+    "firebase_url": "https://dividegame-2a076.firebaseio.com",
+    "project_id": "dividegame-2a076",
+    "storage_bucket": "dividegame-2a076.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151657150168:android:44c061222ae7c05d7ec9ad",
+        "android_client_info": {
+          "package_name": "co.stringsway.dividegame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "151657150168-k3vkt16g5e2c1dn7bms2e94ds6ikhbg0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.stringsway.dividegame",
+            "certificate_hash": "7ad78d4a48a622c8d72966184ea2003e478dafa6"
+          }
+        },
+        {
+          "client_id": "151657150168-7h96gg9vl5tp190kdjlt8dj1421jfn5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDM02EsIWqv8hSkNeDs2fTLkkc5aJlXliM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "151657150168-7h96gg9vl5tp190kdjlt8dj1421jfn5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

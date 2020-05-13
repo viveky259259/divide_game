@@ -1,8 +1,10 @@
-import 'package:doublegame/model/dragNumbers.dart';
-import 'package:doublegame/screens/numberDelegate.dart';
-import 'package:doublegame/screens/timerWidget.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:dividegame/model/dragNumbers.dart';
+import 'package:dividegame/screens/numberDelegate.dart';
+import 'package:dividegame/screens/timerWidget.dart';
 import 'package:flutter/material.dart';
 
+import '../timerWidget.dart';
 import 'dragWidget.dart';
 
 class GameScreen extends StatefulWidget {
@@ -45,21 +47,45 @@ class Pairs {
   }
 }
 
+class UiKeyValue {
+  Key uiKey;
+  int value;
+
+  UiKeyValue(
+    this.value, {
+    this.uiKey,
+  });
+}
+
 class _GameScreenState extends State<GameScreen> {
   bool isSuccessful = false;
   int keep = -1;
   int score = 0;
   DragNumbers dragNumbers;
   List<List<int>> datas;
+  List<List<GlobalKey>> keys;
   bool restart;
+
+  double eachGridSize;
+  AssetsAudioPlayer assetsAudioPlayer;
 
   void initState() {
     super.initState();
+    assetsAudioPlayer = AssetsAudioPlayer.newPlayer();
     restart = false;
     datas = new List.generate(widget.x, (_) => new List(widget.y));
+    keys = new List.generate(widget.x, (index) => new List(widget.y));
     dragNumbers = DragNumbers();
-    NumberDelegate.generateRandomNumber(dragNumbers);
+    NumberDelegate.generateRandomNumber(
+        dragNumbers, NumberDelegate.getMaxNumConsideration(widget.x, widget.y));
     updateData();
+  }
+
+  calculateEachGridSize(context) {
+    eachGridSize =
+        (MediaQuery.of(context).size.width - 32 - 48 - 8 * (widget.x - 1)) /
+            widget.x;
+    print(eachGridSize);
   }
 
   void updateData() {
@@ -71,7 +97,7 @@ class _GameScreenState extends State<GameScreen> {
     score = 0;
   }
 
-  void startCalculation() {
+  void startCalculation() async {
     List<Pairs> pairs = List();
     //check horizontal
     for (int i = 0; i < widget.x; i++) {
@@ -98,6 +124,7 @@ class _GameScreenState extends State<GameScreen> {
       }
     }
     bool recheck = false;
+    Pairs completePair;
     pairs.forEach((e) {
       print('${e.a} , ${e.b}');
       e.calculate();
@@ -107,6 +134,7 @@ class _GameScreenState extends State<GameScreen> {
         datas[e.i2][e.j2] = -1;
         int score = e.a * e.b;
         this.score = this.score + (score > 0 ? score : score * -1);
+        completePair = e;
       } else if (e.ans != -1) {
         if (e.ans < 0) {
           datas[e.i1][e.j1] = -1;
@@ -114,17 +142,25 @@ class _GameScreenState extends State<GameScreen> {
           recheck = true;
           int score = e.a * e.b;
           this.score = this.score + (score > 0 ? score : score * -1);
+          completePair = e;
         } else if (e.ans > 0) {
           datas[e.i2][e.j2] = -1;
           datas[e.i1][e.j1] = e.ans;
           recheck = true;
           int score = e.a * e.b;
           this.score = this.score + (score > 0 ? score : score * -1);
+          completePair = e;
         }
       }
     });
     setState(() {});
-    if (recheck) {
+    if (completePair != null) {
+      showBrekAnimation(keys[completePair.i1][completePair.j1].currentContext,
+          completePair.ans);
+      showBrekAnimation(keys[completePair.i2][completePair.j2].currentContext,
+          completePair.ans);
+      await Future.delayed(Duration(milliseconds: 375));
+
       startCalculation();
       return;
     }
@@ -163,8 +199,95 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
+  showBrekAnimation(BuildContext ctx, int ans) async {
+    assetsAudioPlayer.open(Audio("asset/sounds/crash.mp3"));
+    RenderBox renderBox = ctx.findRenderObject();
+    var size = renderBox.size;
+    var offset = renderBox.localToGlobal(Offset.zero);
+    var center = Offset(
+        offset.dx + size.width / 2 - 15, offset.dy + size.height / 2 - 15);
+    Widget childToShow = Material(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      child: Container(
+        height: 40,
+        width: 40,
+        decoration: BoxDecoration(
+            color: Color.fromRGBO(101, 213, 181, 0.8),
+            borderRadius: BorderRadius.all(Radius.circular(8))),
+        child: Center(
+            child: Text(
+          '${ans < 0 ? ans * -1 : ans}',
+          style: TextStyle(color: Colors.white70, fontSize: 16),
+        )),
+      ),
+    );
+    OverlayEntry topLeft = OverlayEntry(
+        builder: (context) => Positioned(
+              left: center.dx - size.width / 2 - 8,
+              top: center.dy - size.height / 2 - 8 - 15,
+              child: childToShow,
+            ));
+    OverlayEntry topCenter = OverlayEntry(
+        builder: (context) => Positioned(
+            left: center.dx,
+            top: center.dy - size.height / 2 - 8 - 15,
+            child: childToShow));
+    OverlayEntry topRight = OverlayEntry(
+        builder: (context) => Positioned(
+            left: center.dx + size.width / 2 + 8,
+            top: center.dy - size.height / 2 - 8 - 15,
+            child: childToShow));
+    OverlayEntry bottomLeft = OverlayEntry(
+        builder: (context) => Positioned(
+            left: center.dx - size.width / 2 - 8,
+            top: center.dy + size.height / 2 + 15,
+            child: childToShow));
+    OverlayEntry bottomCenter = OverlayEntry(
+        builder: (context) => Positioned(
+            left: center.dx,
+            top: center.dy + size.height / 2 + 15,
+            child: childToShow));
+    OverlayEntry bottomRight = OverlayEntry(
+        builder: (context) => Positioned(
+            left: center.dx + size.width / 2 + 8,
+            top: center.dy + size.height / 2 + 15,
+            child: childToShow));
+    OverlayEntry centeright = OverlayEntry(
+        builder: (context) => Positioned(
+            left: center.dx + size.width / 2 + 8,
+            top: center.dy,
+            child: childToShow));
+    OverlayEntry centerLeft = OverlayEntry(
+        builder: (context) => Positioned(
+            left: center.dx - size.width / 2 - 8,
+            top: center.dy,
+            child: childToShow));
+    Overlay.of(context).insertAll([
+      topRight,
+      topLeft,
+      topCenter,
+      centeright,
+      centerLeft,
+      bottomRight,
+      bottomLeft,
+      bottomCenter
+    ]);
+
+    await Future.delayed(Duration(milliseconds: 375));
+    topRight.remove();
+    topLeft.remove();
+    topCenter.remove();
+    bottomRight.remove();
+    bottomLeft.remove();
+    bottomCenter.remove();
+    centeright.remove();
+    centerLeft.remove();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (eachGridSize == null) calculateEachGridSize(context);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -235,77 +358,88 @@ class _GameScreenState extends State<GameScreen> {
                       childAspectRatio: 1,
                       mainAxisSpacing: 8,
                     ),
-                    childrenDelegate:
-                        SliverChildBuilderDelegate((context, index) {
+                    childrenDelegate: SliverChildBuilderDelegate((ctx, index) {
                       bool isAccepted = false;
                       int acceptedData;
                       int i = index ~/ widget.x;
                       int j = index % widget.y;
-                      return DragTarget(
-                        onLeave: (a) {
-                          print(11);
-                        },
-                        builder:
-                            (context, List<int> candidateData, rejectedData) {
-                          if (datas[i][j] != -1)
-                            return Center(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Color.fromRGBO(101, 213, 181, 0.8),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8))),
-                                child: Center(
-                                    child: Text(
-                                  datas[i][j].toString(),
-                                  style: TextStyle(
-                                      color: Colors.white70, fontSize: 42),
-                                )),
-                              ),
-                            );
-                          else if (isAccepted)
-                            return Center(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Color.fromRGBO(101, 213, 181, 0.8),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8))),
-                                child: Center(
-                                    child: Text(
-                                  datas[i][j].toString(),
-                                  style: TextStyle(
-                                      color: Colors.white70, fontSize: 42),
-                                )),
-                              ),
-                            );
-                          else
-                            return Container(
-                              decoration: BoxDecoration(
-                                  color: candidateData.length > 0
-                                      ? Color.fromRGBO(101, 213, 181, 0.8)
-                                      : Colors.white38,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8))),
-                              child: Center(
-                                  child: Text(
-                                candidateData.length > 0
-                                    ? candidateData[0].toString()
-                                    : '',
-                                style: TextStyle(
-                                    color: Colors.white70, fontSize: 42),
-                              )),
-                            );
-                        },
-                        onWillAccept: (data) {
-                          return datas[i][j] == -1;
-                        },
-                        onAccept: (data) {
-                          isAccepted = true;
-                          acceptedData = data;
-                          print(data);
-                          datas[i][j] = data;
-                          startCalculation();
-                        },
-                      );
+                      GlobalKey globalKey = GlobalKey();
+                      keys[i][j] = globalKey;
+                      return Builder(
+                          builder: (ctx) => DragTarget(
+                                key: globalKey,
+                                onLeave: (a) {
+                                  print(11);
+                                },
+                                builder: (context, List<int> candidateData,
+                                    rejectedData) {
+                                  if (datas[i][j] != -1)
+                                    return Center(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Color.fromRGBO(
+                                                101, 213, 181, 0.8),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8))),
+                                        child: Center(
+                                            child: Text(
+                                          datas[i][j].toString(),
+                                          style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 42),
+                                        )),
+                                      ),
+                                    );
+                                  else if (isAccepted)
+                                    return Center(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Color.fromRGBO(
+                                                101, 213, 181, 0.8),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8))),
+                                        child: Center(
+                                            child: Text(
+                                          datas[i][j].toString(),
+                                          style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 42),
+                                        )),
+                                      ),
+                                    );
+                                  else
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          color: candidateData.length > 0
+                                              ? Color.fromRGBO(
+                                                  101, 213, 181, 0.8)
+                                              : Colors.white38,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8))),
+                                      child: Center(
+                                          child: Text(
+                                        candidateData.length > 0
+                                            ? candidateData[0].toString()
+                                            : '',
+                                        style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: 42),
+                                      )),
+                                    );
+                                },
+                                onWillAccept: (data) {
+                                  return datas[i][j] == -1;
+                                },
+                                onAccept: (data) async {
+                                  assetsAudioPlayer
+                                      .open(Audio("asset/sounds/click2.wav"));
+                                  isAccepted = true;
+                                  acceptedData = data;
+                                  print(data);
+                                  datas[i][j] = data;
+                                  startCalculation();
+                                },
+                              ));
                     }, childCount: widget.y * widget.x)),
               ),
             ),
@@ -354,7 +488,7 @@ class _GameScreenState extends State<GameScreen> {
                         )),
                       ),
                     ),
-                    DragWidget(dragNumbers),
+                    DragWidget(dragNumbers, widget.x, widget.y),
                     DragTarget(
                       onLeave: (a) {
                         print(11);

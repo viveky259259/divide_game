@@ -1,4 +1,4 @@
-import 'package:doublegame/screens/homePage.dart';
+import 'package:dividegame/screens/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,7 +9,7 @@ class SplashScreen extends StatelessWidget {
         .then((value) => Get.off(HomePageScreen()));
     return Material(
       child: Center(
-        child: Text('Double \nThe Game'),
+        child: Text('DIVIDE \nThe Game'),
       ),
     );
   }

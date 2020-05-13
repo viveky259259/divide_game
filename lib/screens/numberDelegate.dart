@@ -1,22 +1,25 @@
 import 'dart:math';
 
-import 'package:doublegame/model/dragNumbers.dart';
-
+import 'package:dividegame/model/dragNumbers.dart';
 
 class NumberDelegate {
-  static DragNumbers generateRandomNumber(DragNumbers dragNumbers) {
+  static DragNumbers generateRandomNumber(DragNumbers dragNumbers, int maxNum) {
     if (dragNumbers.currentNum == 0) {
-      int currentValue = Random().nextInt(8) + 2;
-      int next = Random().nextInt(8) + 2;
-      int nextToNext = Random().nextInt(8) + 2;
+      int currentValue = Random().nextInt(maxNum) + 3;
+      int next = Random().nextInt(maxNum) + 3;
+      int nextToNext = Random().nextInt(maxNum) + 3;
       dragNumbers.currentNum = currentValue;
       dragNumbers.next = next;
       dragNumbers.nextToNext = nextToNext;
     } else {
-      int newValue = Random().nextInt(8) + 2;
+      int newValue = Random().nextInt(maxNum) + 3;
       dragNumbers.currentNum = dragNumbers.next;
       dragNumbers.next = dragNumbers.nextToNext;
       dragNumbers.nextToNext = newValue;
     }
+  }
+
+  static int getMaxNumConsideration(int x, int y) {
+    return x * y + x + y;
   }
 }

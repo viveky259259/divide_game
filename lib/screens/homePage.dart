@@ -1,3 +1,4 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,7 +10,29 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
+  AssetsAudioPlayer assetsAudioPlayer;
 
+  @override
+  void initState() {
+    super.initState();
+    assetsAudioPlayer = AssetsAudioPlayer.newPlayer();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      playBGSound();
+    });
+  }
+
+  void playBGSound() {
+    assetsAudioPlayer.open(Audio("asset/sounds/airtone_-_nightWalk.mp3"),
+        autoStart: true, respectSilentMode: false);
+    assetsAudioPlayer.playlistAudioFinished.listen((event) {
+      assetsAudioPlayer.open(Audio("asset/sounds/airtone_-_nightWalk.mp3"),
+          autoStart: true, respectSilentMode: false);
+    });
+  }
+
+  void stopBGSound() {
+    assetsAudioPlayer.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +44,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
           ),
           Expanded(
             flex: 3,
-            child: Center(child: Image.asset('asset/images/app_image.png')),
+            child: Center(child: Image.asset('asset/images/divide_logo.png')),
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.05,
@@ -49,8 +72,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       ' 3 x 3',
                       style: TextStyle(fontSize: 32, color: Colors.white),
                     ),
-                    onPressed: () {
-                      Get.to(GameScreen(1,3,3));
+                    onPressed: () async {
+                      stopBGSound();
+                      await Get.to(GameScreen(1, 3, 3));
+                      playBGSound();
                     },
                   ),
                   SizedBox(
@@ -65,8 +90,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       ' 4 x 4',
                       style: TextStyle(fontSize: 32, color: Colors.white),
                     ),
-                    onPressed: () {
-                      Get.to(GameScreen(1,4,4));
+                    onPressed: () async {
+                      stopBGSound();
+                      await Get.to(GameScreen(1, 4, 4));
+                      playBGSound();
                     },
                   ),
                   SizedBox(

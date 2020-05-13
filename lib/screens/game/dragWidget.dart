@@ -1,25 +1,29 @@
-import 'package:doublegame/model/dragNumbers.dart';
+import 'package:dividegame/model/dragNumbers.dart';
 import 'package:flutter/material.dart';
 
 import '../numberDelegate.dart';
 
 class DragWidget extends StatefulWidget {
   final DragNumbers dragNumbers;
+  final int x, y;
 
-  DragWidget(this.dragNumbers);
+  DragWidget(this.dragNumbers, this.x, this.y);
 
   @override
   _DragWidgetState createState() => _DragWidgetState();
 }
 
 class _DragWidgetState extends State<DragWidget> {
+  int maxNum;
+
   @override
   void initState() {
     super.initState();
+    maxNum = NumberDelegate.getMaxNumConsideration(widget.x, widget.y);
   }
 
   void getRandomValue() {
-    NumberDelegate.generateRandomNumber(widget.dragNumbers);
+    NumberDelegate.generateRandomNumber(widget.dragNumbers, maxNum);
   }
 
   @override
