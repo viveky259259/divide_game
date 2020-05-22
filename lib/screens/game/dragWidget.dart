@@ -6,8 +6,9 @@ import '../numberDelegate.dart';
 class DragWidget extends StatefulWidget {
   final DragNumbers dragNumbers;
   final int x, y;
+  List<List<int>> datas;
 
-  DragWidget(this.dragNumbers, this.x, this.y);
+  DragWidget(this.dragNumbers, this.x, this.y, this.datas);
 
   @override
   _DragWidgetState createState() => _DragWidgetState();
@@ -23,6 +24,13 @@ class _DragWidgetState extends State<DragWidget> {
   }
 
   void getRandomValue() {
+    List<int> list = List();
+
+    for (int i = 0; i < widget.datas.length; i++) {
+      for (int j = 0; j < widget.datas[i].length; j++) {
+        list.add(widget.datas[i][j]);
+      }
+    }
     NumberDelegate.generateRandomNumber(widget.dragNumbers, maxNum);
   }
 

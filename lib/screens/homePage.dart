@@ -11,10 +11,12 @@ class HomePageScreen extends StatefulWidget {
 
 class _HomePageScreenState extends State<HomePageScreen> {
   AssetsAudioPlayer assetsAudioPlayer;
+  GlobalKey<ScaffoldState> _scaffoldKey;
 
   @override
   void initState() {
     super.initState();
+    _scaffoldKey = GlobalKey();
     assetsAudioPlayer = AssetsAudioPlayer.newPlayer();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       playBGSound();
@@ -37,6 +39,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: Column(
         children: <Widget>[
           SizedBox(
@@ -108,7 +111,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       'Time Limit',
                       style: TextStyle(fontSize: 32, color: Colors.white),
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      stopBGSound();
+                      await Get.to(GameScreen(2, 3, 3));
+                    },
                   ),
                 ],
               ),
