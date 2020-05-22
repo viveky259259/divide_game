@@ -1,5 +1,7 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:dividegame/interfaces/i_game_screen.dart';
 import 'package:dividegame/model/dragNumbers.dart';
+import 'package:dividegame/screens/game/GameScreeenController.dart';
 import 'package:dividegame/screens/numberDelegate.dart';
 import 'package:dividegame/screens/timerWidget.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +59,7 @@ class UiKeyValue {
   });
 }
 
-class _GameScreenState extends State<GameScreen> {
+class _GameScreenState extends State<GameScreen> with IGameScreen {
   bool isSuccessful = false;
   int keep = -1;
   int score = 0;
@@ -65,12 +67,15 @@ class _GameScreenState extends State<GameScreen> {
   List<List<int>> datas;
   List<List<GlobalKey>> keys;
   bool restart;
-
+  int currentScoreToOverride = 0;
   double eachGridSize;
   AssetsAudioPlayer assetsAudioPlayer;
+  GameScreenController gameScreenController;
+  ValueNotifier<int> level = ValueNotifier(0);
 
   void initState() {
     super.initState();
+    gameScreenController = GameScreenController();
     assetsAudioPlayer = AssetsAudioPlayer.newPlayer();
     restart = false;
     datas = new List.generate(widget.x, (_) => new List(widget.y));
@@ -81,22 +86,31 @@ class _GameScreenState extends State<GameScreen> {
     updateData();
   }
 
-  calculateEachGridSize(context) {
+  void calculateEachGridSize(context) {
     eachGridSize =
         (MediaQuery.of(context).size.width - 32 - 48 - 8 * (widget.x - 1)) /
             widget.x;
     print(eachGridSize);
   }
 
+  @override
   void updateData() {
     for (int i = 0; i < widget.x; i++) {
       for (int j = 0; j < widget.y; j++) {
         datas[i][j] = -1;
       }
     }
+
     score = 0;
+    level.value = 0;
   }
 
+  int calculateFibonacci(int num) {
+    if (num == 0) return 0;
+    return num + calculateFibonacci(num - 1);
+  }
+
+  @override
   void startCalculation() async {
     List<Pairs> pairs = List();
     //check horizontal
@@ -165,15 +179,20 @@ class _GameScreenState extends State<GameScreen> {
       return;
     }
     if (!recheck) {
-      checkIfGameEnds();
+      bool gameEnd = await checkIfGameEnds();
+      if (!gameEnd) {
+        gotoNextLevel();
+      }
     }
   }
 
-  checkIfGameEnds() async {
+  Future<bool> checkIfGameEnds() async {
     bool gameEnds = true;
-    for (int i = 0; i < widget.x - 1; i++) {
+    for (int i = 0; i < widget.x; i++) {
+      print(11);
       if (gameEnds)
         for (int k = 0; k < widget.y; k++) {
+          print(12);
           if (datas[i][k] == -1) {
             gameEnds = false;
             break;
@@ -190,13 +209,33 @@ class _GameScreenState extends State<GameScreen> {
           context: context,
           builder: (context) => AlertDialog(
                 title: Text('Game Ends'),
-                content: Text('$score Scored'),
+                content: Text(
+                  '$score Scored',
+                  style: TextStyle(color: Colors.black),
+                ),
               ));
       setState(() {
         updateData();
         restart = false;
       });
     }
+    return gameEnds;
+  }
+
+  @override
+  void gotoNextLevel() {
+    print('score: $score, override: $currentScoreToOverride');
+    if (currentScoreToOverride == 0) calculateCurrentScoreToOverride();
+    if (score > currentScoreToOverride) {
+      currentScoreToOverride = 0;
+      level.value++;
+    }
+  }
+
+  @override
+  void calculateCurrentScoreToOverride() {
+    int fibNum = calculateFibonacci(level.value);
+    currentScoreToOverride = fibNum * 123;
   }
 
   showBrekAnimation(BuildContext ctx, int ans) async {
@@ -288,7 +327,9 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     if (eachGridSize == null) calculateEachGridSize(context);
+    print('hello');
     return Scaffold(
+      key: gameScreenController.scaffoldKey,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -296,7 +337,7 @@ class _GameScreenState extends State<GameScreen> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
-            TimerWidget(restart),
+            TimerWidget(restart, gameScreenController),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
@@ -307,14 +348,35 @@ class _GameScreenState extends State<GameScreen> {
                   color: Colors.white70,
                   size: 48,
                 ),
-                SizedBox(
+                const  SizedBox(
                   width: 16,
                 ),
                 Text(
                   '$score',
                   style: TextStyle(color: Colors.white70, fontSize: 32),
                 ),
-                Spacer(),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        'Level',
+                        style: TextStyle(color: Colors.white70, fontSize: 24),
+                      ),
+                      const  SizedBox(
+                        width: 12,
+                      ),
+                      ValueListenableBuilder(
+                        valueListenable: level,
+                        builder: (context, value, child) => Text(
+                          '${value}',
+                          style: TextStyle(color: Colors.white70, fontSize: 48),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
                 InkWell(
                   onTap: () {
                     setState(() {
@@ -338,7 +400,7 @@ class _GameScreenState extends State<GameScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const  SizedBox(
                   width: 16,
                 ),
               ],
@@ -488,7 +550,7 @@ class _GameScreenState extends State<GameScreen> {
                         )),
                       ),
                     ),
-                    DragWidget(dragNumbers, widget.x, widget.y),
+                    DragWidget(dragNumbers, widget.x, widget.y, datas),
                     DragTarget(
                       onLeave: (a) {
                         print(11);

@@ -1,11 +1,15 @@
 import 'dart:async';
 
+import 'package:dividegame/screens/game/GameScreeenController.dart';
 import 'package:flutter/material.dart';
+
+import 'game/pause_dialog.dart';
 
 class TimerWidget extends StatefulWidget {
   bool restart;
+  final GameScreenController gameScreenController;
 
-  TimerWidget(this.restart);
+  TimerWidget(this.restart, this.gameScreenController);
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
@@ -14,7 +18,7 @@ class TimerWidget extends StatefulWidget {
 class _TimerWidgetState extends State<TimerWidget> {
   DateTime startTime;
   bool pause;
-  String timeToShow;
+  ValueNotifier<String> timeToShow;
   Duration currentDuration;
 
   @override
@@ -22,42 +26,47 @@ class _TimerWidgetState extends State<TimerWidget> {
     super.initState();
     pause = false;
     startTime = DateTime.now();
-    timeToShow = '';
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      if (mounted) setState(() {});
+    timeToShow = ValueNotifier('');
+    Timer.periodic(Duration(milliseconds: 100), (timer) {
+      if (mounted) getTimeInString();
     });
   }
 
   String getTimeInString() {
-    print(widget.restart);
     if (widget.restart) {
       currentDuration = Duration();
       startTime = null;
       if (pause) {
-        timeToShow = '0:00:00';
+        timeToShow.value = '0:00:00';
         pause = false;
       }
-      return timeToShow;
+      return timeToShow.value;
     }
     if (!pause) {
       if (startTime == null) startTime = DateTime.now();
       DateTime currentTime = DateTime.now();
       Duration diff = currentTime.difference(startTime);
-      timeToShow = diff.toStringForTimer();
+      timeToShow.value = diff.toStringForTimer();
       currentDuration = diff;
     }
-    return timeToShow;
+    return timeToShow.value;
   }
 
-  toggle() {
+  void toggle() async {
     if (pause) {
       if (currentDuration != null) {
         DateTime currentTime = DateTime.now();
         startTime = currentTime.subtract(currentDuration);
         pause = false;
       }
-    } else
+    } else {
+      await showDialog(
+          context: context,
+          builder: (context) => Dialog(
+                child: PauseDialog(widget.gameScreenController.scaffoldKey),
+              ));
       pause = true;
+    }
     setState(() {});
   }
 
@@ -67,11 +76,14 @@ class _TimerWidgetState extends State<TimerWidget> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(
-            getTimeInString(),
-            style: TextStyle(color: Colors.white70, fontSize: 32),
+          ValueListenableBuilder<String>(
+            valueListenable: timeToShow,
+            builder: (context, value, child) {
+              return Text(value,
+                  style: TextStyle(color: Colors.white70, fontSize: 32));
+            },
           ),
-          SizedBox(
+          const SizedBox(
             width: 32,
           ),
           GestureDetector(
