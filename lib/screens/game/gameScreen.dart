@@ -169,9 +169,9 @@ class _GameScreenState extends State<GameScreen> with IGameScreen {
     });
     setState(() {});
     if (completePair != null) {
-      showBrekAnimation(keys[completePair.i1][completePair.j1].currentContext,
+      showBreakAnimation(keys[completePair.i1][completePair.j1].currentContext,
           completePair.ans);
-      showBrekAnimation(keys[completePair.i2][completePair.j2].currentContext,
+      showBreakAnimation(keys[completePair.i2][completePair.j2].currentContext,
           completePair.ans);
       await Future.delayed(Duration(milliseconds: 375));
 
@@ -238,7 +238,7 @@ class _GameScreenState extends State<GameScreen> with IGameScreen {
     currentScoreToOverride = fibNum * 123;
   }
 
-  showBrekAnimation(BuildContext ctx, int ans) async {
+  showBreakAnimation(BuildContext ctx, int ans) async {
     assetsAudioPlayer.open(Audio("asset/sounds/crash.mp3"));
     RenderBox renderBox = ctx.findRenderObject();
     var size = renderBox.size;
