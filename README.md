@@ -1,5 +1,7 @@
 # Flutter Game Project: Divide
 
+### Download URL
+<b><a href="https://play.google.com/store/apps/details?id=co.stringsway.dividegame"> Download from PlayStore</a></b>
 ## Feature
  1. [x] 3 x 3 board
  2. [x] 4 x 4 board
