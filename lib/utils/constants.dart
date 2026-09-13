@@ -45,13 +45,13 @@ class StationInfo {
 }
 
 class AppConstants {
-  static const String appName = 'Mumbai Train Quiz';
+  static const String appName = 'Window Seat';
   static const int totalLevels = 20;
 
-  /// Questions drawn per level. If a level has fewer approved questions than
-  /// this, the level simply runs short rather than blocking play.
-  /// Drawn at random from everything approved for that level, so replaying a
-  /// level is not the same round twice.
+  /// Questions drawn per level, at random from everything approved for that
+  /// station, so replaying a level is not the same round twice. A level with
+  /// fewer approved questions than this simply runs short rather than
+  /// blocking play.
   static const int questionsPerLevel = 3;
   static const int minQuestionsToPlay = 1;
 
@@ -59,8 +59,16 @@ class AppConstants {
   static const int fastAnswerBonus = 50;
   static const int fastAnswerThresholdSeconds = 15;
 
+  /// Clearing a station pays this much per level, so the far end of the line
+  /// is worth the risk of losing the round.
+  static const int levelClearBonusPerLevel = 50;
+  static const int checkpointBonus = 500;
+
   static const int questionSeconds = 30;
 
-  /// Levels that act as safe checkpoints, KBC style.
+  /// Milestone stations. Reaching one pays a bonus and marks the journey.
   static const List<int> safeCheckpoints = [5, 10, 15, 20];
+
+  /// Points a contributor earns when an admin approves one of their questions.
+  static const int contributionApprovedReward = 250;
 }
