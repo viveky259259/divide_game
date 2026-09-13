@@ -50,7 +50,9 @@ class AppConstants {
 
   /// Questions drawn per level. If a level has fewer approved questions than
   /// this, the level simply runs short rather than blocking play.
-  static const int questionsPerLevel = 5;
+  /// Drawn at random from everything approved for that level, so replaying a
+  /// level is not the same round twice.
+  static const int questionsPerLevel = 3;
   static const int minQuestionsToPlay = 1;
 
   static const int pointsPerCorrectAnswer = 100;
