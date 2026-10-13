@@ -1,56 +1,69 @@
-# Flutter Game Project: Divide
+# Window Seat
 
-### Download URL
-<b><a href="https://play.google.com/store/apps/details?id=co.stringsway.dividegame"> Download from PlayStore</a></b>
-## Feature
- 1. [x] 3 x 3 board
- 2. [x] 4 x 4 board
- 3. [x] Point calculations
- 4. [x] next and after next calculated values
- 5. [x] Winner calculation
- 6. [x] Timer (Play, pause)
- 7. [x] Reset Game
- 8. [x] Bg sound, Tap sound, clear sound
- 
-## Coming soon
- 1. [ ] n x n board
- 2. [ ] BG sound in game
- 3. [ ] winner ui
- 4. [ ] Leaderboard
- 5. [ ] Challenges
- 6. [ ] Play with friend
- 7. [ ] Analytics
- 8. [ ] Analytics for user
- 9. [ ] More types of play 
- 
- 
-## Game snapshots
+A KBC-style quiz game set on the Mumbai Western Line, Virar to Churchgate.
+Twenty stations, twenty levels. Every question is about what you could see
+from the window at that stretch of the line.
 
-![GameImage](https://github.com/viveky259259/divide_game/blob/master/snapshots/divide%20game%2012.png?raw=true)
-![GameImage](https://github.com/viveky259259/divide_game/blob/master/snapshots/divide%20game1.png?raw=true)
-![GameImage](https://github.com/viveky259259/divide_game/blob/master/snapshots/divide%20game%2013.png?raw=true)
-![GameImage](https://github.com/viveky259259/divide_game/blob/master/snapshots/divide%20game%2014.png?raw=true)
-![GameImage](https://github.com/viveky259259/divide_game/blob/master/snapshots/divide%20game%2015.png?raw=true)
+> **Status:** written without a Flutter SDK available, so it has not been
+> compiled or run, and `flutter pub get` has never been executed against it.
+> Expect a first pass of small fixes. Start with `flutter pub get`,
+> `flutter analyze`, `flutter test`.
 
+## How it plays
 
-MIT License
+- Each station is a level. A round draws 3 questions at random from every
+  *approved* question for that station (5 ship with the app per station, and
+  the pool grows as contributions are approved).
+- 30 seconds a question. A wrong answer or an empty clock ends the round; points
+  already banked are kept.
+- Three lifelines per round: 50:50, ask the compartment, skip the stop.
+- Clearing a station pays `level × 50`, plus a 500 bonus at stations
+  5, 10, 15 and 20, and unlocks the next one.
 
-Copyright (c) 2020 Vivek Yadav
+## Three kinds of people
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+| Role | Can do |
+| --- | --- |
+| Player | Ride the line, spend points in the marketplace |
+| Contributor | Everything a player can, plus write questions for any station |
+| Admin | Everything above, plus approve or send back contributed questions |
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+A contributed question stays `pending` and is invisible to gameplay until an
+admin approves it. Approval pays the author 250 points. A rejection carries a
+reason the author can read.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+## Marketplace
+
+Sellers list a reward with two numbers: its price in points, and the rupee value
+the business settles when the code is redeemed (`ProductModel.redeemValueInRupees`).
+Buying spends from the balance (never from lifetime points), decrements stock
+and issues a six-character redemption code. Eight starter listings ship with the
+app. There is no seller sign-in or listing form yet; sellers are seed data.
+
+## Offline first
+
+Everything reads and writes a local Hive store, so the whole game works with no
+network. Each write also appends to a queue (`sync_queue`). `SyncService` watches
+connectivity and drains the queue oldest-first when a connection appears.
+
+No backend is wired up. `SyncService._push` is the one method to implement, and
+`SyncService.remoteConfigured` gates the drain, so until then the queue
+accumulates rather than being discarded.
+
+Accounts are local and password-less (identity is just an email on the device).
+`AuthController.login` / `register` are the seams for real authentication.
+
+## Layout
+
+```
+lib/
+  app/        routes, theme
+  data/       models, Hive store, sync service, seed questions + products
+  modules/    auth, splash, home, quiz, contribute, admin, marketplace, profile
+  widgets/    shared widgets
+  utils/      stations and game constants
+```
+
+State is GetX. One rule worth knowing: an observable read inside a child
+widget's `build` is not tracked by an `Obx` further up the tree, so each widget
+that watches one owns its own `Obx`.
