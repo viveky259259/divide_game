@@ -1,25 +1,18 @@
-name: Dart CI
+name: Flutter CI
 
 on:
   push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
 
 jobs:
-  build-and-test:
+  analyze-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      # The flutter action needs java so include it
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
         with:
-          java-version: '12.x'
-      # Include the flutter action
-      - uses: subosito/flutter-action@v1
-        with:
-          channel: 'stable'
-      # Get flutter packages
+          channel: stable
+          cache: true
       - run: flutter pub get
-      # Build :D
-      - run: flutter build aot -t lib/main.dart
+      - run: flutter analyze
+      - run: flutter test
