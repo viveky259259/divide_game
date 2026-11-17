@@ -45,7 +45,7 @@ class OfflineBanner extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         color: offline
             ? AppColors.surface
-            : AppColors.lifeline.withOpacity(0.15),
+            : AppColors.lifeline.withValues(alpha: 0.15),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -84,9 +84,9 @@ class PointsChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: AppColors.accentGold.withOpacity(0.15),
+          color: AppColors.accentGold.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.accentGold.withOpacity(0.4)),
+          border: Border.all(color: AppColors.accentGold.withValues(alpha: 0.4)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -187,7 +187,7 @@ class StatTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.cardBg,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.25)),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Column(
         children: [

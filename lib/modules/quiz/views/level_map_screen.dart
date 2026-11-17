@@ -286,25 +286,25 @@ class _StationCard extends StatelessWidget {
                             Icon(Icons.help_outline,
                                 size: 11,
                                 color: AppColors.textSecondary
-                                    .withOpacity(0.8)),
+                                    .withValues(alpha: 0.8)),
                             const SizedBox(width: 4),
                             Text(
                               '$approvedCount in the pool',
                               style: TextStyle(
                                 color:
-                                    AppColors.textSecondary.withOpacity(0.8),
+                                    AppColors.textSecondary.withValues(alpha: 0.8),
                                 fontSize: 10.5,
                               ),
                             ),
                             if (bestScore != null) ...[
                               const SizedBox(width: 12),
                               Icon(Icons.stars_rounded,
-                                  size: 11, color: accent.withOpacity(0.9)),
+                                  size: 11, color: accent.withValues(alpha: 0.9)),
                               const SizedBox(width: 4),
                               Text(
                                 'best $bestScore',
                                 style: TextStyle(
-                                  color: accent.withOpacity(0.9),
+                                  color: accent.withValues(alpha: 0.9),
                                   fontSize: 10.5,
                                 ),
                               ),
@@ -323,7 +323,7 @@ class _StationCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 7),
                       decoration: BoxDecoration(
-                        color: accent.withOpacity(0.15),
+                        color: accent.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(

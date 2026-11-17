@@ -301,7 +301,7 @@ class _DifficultyPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
@@ -344,11 +344,11 @@ class _Options extends StatelessWidget {
           if (revealed) {
             if (isCorrect) {
               border = AppColors.correct;
-              fill = AppColors.correct.withOpacity(0.18);
+              fill = AppColors.correct.withValues(alpha: 0.18);
               text = AppColors.correct;
             } else if (isPicked) {
               border = AppColors.wrong;
-              fill = AppColors.wrong.withOpacity(0.18);
+              fill = AppColors.wrong.withValues(alpha: 0.18);
               text = AppColors.wrong;
             }
           }
@@ -436,7 +436,7 @@ class _AudiencePoll extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.cardBg,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.lifeline.withOpacity(0.4)),
+        border: Border.all(color: AppColors.lifeline.withValues(alpha: 0.4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -588,7 +588,7 @@ class _LifelineButton extends StatelessWidget {
                   height: 46,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: color.withOpacity(0.12),
+                    color: color.withValues(alpha: 0.12),
                     border: Border.all(color: color, width: 1.5),
                   ),
                   child: Icon(icon, color: color, size: 20),

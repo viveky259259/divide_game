@@ -14,5 +14,8 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
-      - run: flutter analyze
+      # Infos stay visible but do not fail the build: the only ones left are
+      # Flutter 3.47's notice that material.dart is moving to the material_ui
+      # package, and migrating would drop support for older SDKs.
+      - run: flutter analyze --no-fatal-infos
       - run: flutter test

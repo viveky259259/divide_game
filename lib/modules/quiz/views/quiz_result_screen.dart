@@ -161,7 +161,7 @@ class _Verdict extends StatelessWidget {
             height: 82,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: color.withOpacity(0.15),
+              color: color.withValues(alpha: 0.15),
               border: Border.all(color: color, width: 2),
             ),
             child: Icon(icon, color: color, size: 40),
@@ -240,7 +240,7 @@ class _CheckpointBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.accentGold.withOpacity(0.12),
+        color: AppColors.accentGold.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.accentGold),
       ),

@@ -163,7 +163,7 @@ class _QueueHeader extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.accentGold.withOpacity(0.15),
+              color: AppColors.accentGold.withValues(alpha: 0.15),
             ),
             child: Text(
               '$pending',

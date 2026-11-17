@@ -5,6 +5,9 @@ version: 1.0.0+1
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
+  # withValues and WidgetStateProperty need 3.27; PopScope's
+  # onPopInvokedWithResult needs 3.24.
+  flutter: ">=3.27.0"
 
 dependencies:
   flutter:

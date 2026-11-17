@@ -5,7 +5,6 @@ import 'package:mumbai_train_quiz/app/theme/app_theme.dart';
 import 'package:mumbai_train_quiz/data/models/question_model.dart';
 import 'package:mumbai_train_quiz/modules/contribute/contribute_controller.dart';
 import 'package:mumbai_train_quiz/utils/constants.dart';
-import 'package:mumbai_train_quiz/widgets/app_widgets.dart';
 
 /// Where a contributor writes a question about their own stretch of the line.
 class ContributeScreen extends StatefulWidget {
@@ -117,7 +116,7 @@ class _ContributeScreenState extends State<ContributeScreen> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: isCorrect
-                              ? AppColors.correct.withOpacity(0.2)
+                              ? AppColors.correct.withValues(alpha: 0.2)
                               : AppColors.surface,
                           border: Border.all(
                             color: isCorrect
@@ -336,7 +335,7 @@ class _DifficultyPicker extends StatelessWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color:
-                      selected ? color.withOpacity(0.15) : AppColors.surface,
+                      selected ? color.withValues(alpha: 0.15) : AppColors.surface,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: selected ? color : AppColors.trackGrey,
@@ -379,7 +378,7 @@ class _SubmissionRow extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withOpacity(0.35)),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -400,7 +399,7 @@ class _SubmissionRow extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
+                  color: color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(

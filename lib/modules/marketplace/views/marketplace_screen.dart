@@ -137,14 +137,14 @@ class _Balance extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.marketplace.withOpacity(0.30),
+            AppColors.marketplace.withValues(alpha: 0.30),
             AppColors.cardBg,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.marketplace.withOpacity(0.4)),
+        border: Border.all(color: AppColors.marketplace.withValues(alpha: 0.4)),
       ),
       child: Row(
         children: [
@@ -211,7 +211,7 @@ class _Categories extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: on
-                    ? AppColors.marketplace.withOpacity(0.2)
+                    ? AppColors.marketplace.withValues(alpha: 0.2)
                     : AppColors.surface,
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(
@@ -272,7 +272,7 @@ class _ProductCard extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: AppColors.accentGold.withOpacity(0.15),
+                  color: AppColors.accentGold.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -452,7 +452,7 @@ class _PurchaseRow extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.cardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.marketplace.withOpacity(0.3)),
+        border: Border.all(color: AppColors.marketplace.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [

@@ -86,13 +86,25 @@ class AppTheme {
         labelStyle: const TextStyle(color: AppColors.textSecondary),
         hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.cardBg,
-        selectedItemColor: AppColors.accentGold,
-        unselectedItemColor: AppColors.textSecondary,
-        type: BottomNavigationBarType.fixed,
-        selectedFontSize: 11,
-        unselectedFontSize: 11,
+        indicatorColor: AppColors.accentGold.withValues(alpha: 0.18),
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            color: states.contains(WidgetState.selected)
+                ? AppColors.accentGold
+                : AppColors.textSecondary,
+          ),
+        ),
+        iconTheme: WidgetStateProperty.resolveWith(
+          (states) => IconThemeData(
+            color: states.contains(WidgetState.selected)
+                ? AppColors.accentGold
+                : AppColors.textSecondary,
+          ),
+        ),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.cardBg,

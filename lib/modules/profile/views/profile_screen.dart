@@ -110,7 +110,7 @@ class _Identity extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 28,
-            backgroundColor: AppColors.accentGold.withOpacity(0.15),
+            backgroundColor: AppColors.accentGold.withValues(alpha: 0.15),
             child: Text(
               initial,
               style: const TextStyle(

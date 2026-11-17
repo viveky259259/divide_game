@@ -96,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen>
                       Text(
                         'A quiz along the Western Line',
                         style: TextStyle(
-                          color: AppColors.textPrimary.withOpacity(0.75),
+                          color: AppColors.textPrimary.withValues(alpha: 0.75),
                           fontSize: 14,
                         ),
                       ),
