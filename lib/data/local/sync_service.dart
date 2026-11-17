@@ -12,6 +12,11 @@ import 'package:mumbai_train_quiz/data/local/hive_service.dart';
 /// Firestore (or any backend) and the whole offline story starts working; until
 /// then the queue simply accumulates locally and nothing is lost.
 class SyncService extends GetxService {
+  /// False only in tests, where the connectivity plugin has no platform side.
+  final bool watchConnectivity;
+
+  SyncService({this.watchConnectivity = true});
+
   final _connectivity = Connectivity();
 
   final isOnline = false.obs;
@@ -29,6 +34,7 @@ class SyncService extends GetxService {
   void onInit() {
     super.onInit();
     refreshPendingCount();
+    if (!watchConnectivity) return;
     _subscription =
         _connectivity.onConnectivityChanged.listen(_handleConnectivityChange);
     unawaited(_checkNow());

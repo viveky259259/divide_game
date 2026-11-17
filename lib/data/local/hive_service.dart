@@ -22,8 +22,14 @@ class HiveService {
   static const _settings = 'settings';
   static const _syncQueue = 'sync_queue';
 
-  static Future<void> init() async {
-    await Hive.initFlutter();
+  /// Opens every box. [path] is for tests, which have no app documents
+  /// directory; the app itself always leaves it null.
+  static Future<void> init({String? path}) async {
+    if (path == null) {
+      await Hive.initFlutter();
+    } else {
+      Hive.init(path);
+    }
     await Future.wait([
       Hive.openBox<String>(_users),
       Hive.openBox<String>(_questions),
