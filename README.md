@@ -4,10 +4,26 @@ A KBC-style quiz game set on the Mumbai Western Line, Virar to Churchgate.
 Twenty stations, twenty levels. Every question is about what you could see
 from the window at that stretch of the line.
 
-> **Status:** written without a Flutter SDK available, so it has not been
-> compiled or run, and `flutter pub get` has never been executed against it.
-> Expect a first pass of small fixes. Start with `flutter pub get`,
-> `flutter analyze`, `flutter test`.
+Needs Flutter 3.27 or newer.
+
+```
+flutter pub get
+flutter analyze --no-fatal-infos
+flutter test
+flutter run
+```
+
+CI runs the first three on every push. The tests in `test/game_rules_test.dart`
+check the rules the game promises (what reaches a round, who gets paid, what a
+purchase costs) against the real controllers and a Hive store in a temp
+directory.
+
+Built and played through on Flutter 3.50 stable as a web build in Chromium:
+sign-up for each role, full rounds won and lost, all three lifelines, the clock
+running out, submit → reject/approve → the approved question drawn in a round,
+a marketplace purchase, offline play, and a page reload keeping account,
+balance, stock and redemption codes. It has not been run on an Android or iOS
+device.
 
 ## How it plays
 
