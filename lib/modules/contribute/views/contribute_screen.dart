@@ -5,6 +5,7 @@ import 'package:mumbai_train_quiz/app/theme/app_theme.dart';
 import 'package:mumbai_train_quiz/data/models/question_model.dart';
 import 'package:mumbai_train_quiz/modules/contribute/contribute_controller.dart';
 import 'package:mumbai_train_quiz/utils/constants.dart';
+import 'package:mumbai_train_quiz/widgets/app_widgets.dart';
 
 /// Where a contributor writes a question about their own stretch of the line.
 class ContributeScreen extends StatefulWidget {
@@ -44,11 +45,9 @@ class _ContributeScreenState extends State<ContributeScreen> {
     setState(() => _busy = false);
 
     if (problem != null) {
-      Get.snackbar(
+      showNotice(
         'Not quite ready',
         problem,
-        snackPosition: SnackPosition.BOTTOM,
-        margin: const EdgeInsets.all(16),
       );
       return;
     }
@@ -59,12 +58,10 @@ class _ContributeScreenState extends State<ContributeScreen> {
       o.clear();
     }
 
-    Get.snackbar(
+    showNotice(
       'Sent for review',
       'An admin will check it. Once approved it joins the pool for that '
           'station.',
-      snackPosition: SnackPosition.BOTTOM,
-      margin: const EdgeInsets.all(16),
       duration: const Duration(seconds: 4),
     );
   }

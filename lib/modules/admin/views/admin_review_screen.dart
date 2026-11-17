@@ -72,13 +72,11 @@ class AdminReviewScreen extends StatelessWidget {
 
   Future<void> _approve(AdminController c, QuestionModel q) async {
     await c.approve(q);
-    Get.snackbar(
+    showNotice(
       'Approved',
       '${q.stationName} players can now draw this one. '
           '${q.contributorName ?? 'The contributor'} earned '
           '${AppConstants.contributionApprovedReward} points.',
-      snackPosition: SnackPosition.BOTTOM,
-      margin: const EdgeInsets.all(16),
       duration: const Duration(seconds: 4),
     );
   }
@@ -121,11 +119,9 @@ class AdminReviewScreen extends StatelessWidget {
               final reason = field.text;
               Get.back<void>();
               await c.reject(q, reason);
-              Get.snackbar(
+              showNotice(
                 'Sent back',
                 'The contributor can see your note and try again.',
-                snackPosition: SnackPosition.BOTTOM,
-                margin: const EdgeInsets.all(16),
               );
             },
             child: const Text(

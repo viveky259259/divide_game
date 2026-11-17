@@ -9,6 +9,7 @@ import 'package:mumbai_train_quiz/data/local/sync_service.dart';
 import 'package:mumbai_train_quiz/modules/auth/auth_controller.dart';
 import 'package:mumbai_train_quiz/modules/quiz/quiz_controller.dart';
 import 'package:mumbai_train_quiz/utils/constants.dart';
+import 'package:mumbai_train_quiz/widgets/app_widgets.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +38,7 @@ class WindowSeatApp extends StatelessWidget {
       theme: AppTheme.dark,
       initialRoute: AppRoutes.splash,
       getPages: AppPages.pages,
+      scaffoldMessengerKey: noticeMessengerKey,
     );
   }
 }

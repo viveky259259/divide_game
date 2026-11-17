@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:mumbai_train_quiz/app/theme/app_theme.dart';
+import 'package:mumbai_train_quiz/modules/auth/auth_controller.dart';
 import 'package:mumbai_train_quiz/modules/quiz/quiz_controller.dart';
 import 'package:mumbai_train_quiz/utils/constants.dart';
 import 'package:mumbai_train_quiz/widgets/app_widgets.dart';
@@ -56,12 +57,19 @@ class QuizScreen extends StatelessWidget {
   }
 
   void _confirmQuit(QuizController c) {
+    final alreadyCleared = AuthController.to.current.value?.completedLevels
+            .contains(c.level) ??
+        false;
+    final banked = 'You keep the ${c.score.value} points you have banked';
+
     Get.dialog<void>(
       AlertDialog(
         title: const Text('Get off here?'),
         content: Text(
-          'You keep the ${c.score.value} points you have banked, but '
-          '${c.stationName} stays locked.',
+          alreadyCleared
+              ? '$banked. ${c.stationName} stays cleared.'
+              : '$banked, but the line past ${c.stationName} stays locked '
+                  'until you clear it.',
         ),
         actions: [
           TextButton(

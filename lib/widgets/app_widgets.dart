@@ -215,3 +215,60 @@ class StatTile extends StatelessWidget {
     );
   }
 }
+
+/// Handed to [GetMaterialApp] so [showNotice] can reach the messenger from a
+/// controller or a callback that has no [BuildContext] of its own.
+final noticeMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
+/// A short confirmation or nudge.
+///
+/// Uses Flutter's own [SnackBar] rather than `Get.snackbar`: it floats above
+/// the bottom navigation bar on its own, and its semantics node covers only
+/// the notice. GetX's version wraps a full-screen layer in a semantics
+/// container, which swallows taps on the tabs behind it for anyone using the
+/// accessibility tree until it clears.
+void showNotice(
+  String title,
+  String message, {
+  Duration duration = const Duration(seconds: 3),
+}) {
+  final messenger = noticeMessengerKey.currentState;
+  if (messenger == null) return;
+
+  messenger
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        duration: duration,
+        backgroundColor: AppColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: const BorderSide(color: AppColors.trackGrey),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 3),
+            Text(
+              message,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 12.5,
+                height: 1.4,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+}

@@ -71,11 +71,9 @@ class MarketplaceScreen extends StatelessWidget {
   ) async {
     final short = _shortBy(product);
     if (short > 0) {
-      Get.snackbar(
+      showNotice(
         'Not yet',
         '$short more points and it is yours.',
-        snackPosition: SnackPosition.BOTTOM,
-        margin: const EdgeInsets.all(16),
       );
       return;
     }
@@ -109,11 +107,9 @@ class MarketplaceScreen extends StatelessWidget {
 
     final code = await c.buy(product);
     if (code == null) {
-      Get.snackbar(
+      showNotice(
         'That did not go through',
         'Your balance moved. Have another look.',
-        snackPosition: SnackPosition.BOTTOM,
-        margin: const EdgeInsets.all(16),
       );
       return;
     }
